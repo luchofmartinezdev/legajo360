@@ -1,0 +1,95 @@
+// Efecto cristal para la barra
+.glass-navbar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  height: 70px;
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+// Logo Kernel Studio / Legajo360
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover { transform: scale(1.02); }
+
+  .logo-box {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mat-icon { color: white; font-size: 20px; width: 20px; height: 20px; }
+  }
+
+  .brand-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.5px;
+  }
+}
+
+// LA CLAVE: El espaciador empuja el contenido
+.spacer {
+  flex: 1 1 auto;
+}
+
+// Zona derecha (Usuario)
+.user-zone {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .greeting {
+    font-size: 14px;
+    color: #64748b;
+    strong { color: #1e293b; }
+    
+    // Ocultar el saludo en celulares para ahorrar espacio
+    @media (max-width: 600px) {
+      display: none;
+    }
+  }
+
+  .avatar-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+  }
+
+  .avatar-mini {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e0e7ff;
+    color: #4338ca;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+
+    &:hover {
+      background: #4338ca;
+      color: white;
+    }
+  }
+}
+
+.logout-text {
+  color: #ef4444;
+}

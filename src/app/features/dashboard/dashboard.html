@@ -1,0 +1,200 @@
+<div class="dashboard-wrapper" *ngIf="employeeData$ | async as currentUser; else mainLoading">
+
+  <header class="section-header">
+    <div class="title-group">
+      <h2 class="main-title">
+        {{ currentUser.role === 'employee' ? 'Mi Legajo Digital' : 'Panel de Control' }}
+      </h2>
+      <p class="subtitle">
+        {{ currentUser.role === 'employee' ? 'Tus recibos y datos personales' : 'Gestión de Kernel Studio' }}
+      </p>
+    </div>
+  </header>
+
+  <mat-tab-group *ngIf="currentUser.role === 'admin' || currentUser.role === 'rrhh'; else employeeView"
+    class="modern-tabs">
+
+    <mat-tab label="Nómina de Empleados">
+      <div class="tab-content">
+
+        <div class="actions-bar">
+          <div class="search-box">
+            <mat-icon>search</mat-icon>
+            <input type="text" [formControl]="searchControl" placeholder="Buscar por nombre o legajo (mín. 3)...">
+          </div>
+          <button mat-flat-button color="primary" class="btn-add" (click)="abrirNuevoIngreso()">
+            <mat-icon>person_add</mat-icon> NUEVO INGRESO
+          </button>
+        </div>
+
+        <div class="no-results" *ngIf="(allEmployees$ | async)?.length === 0">
+          <mat-icon>search_off</mat-icon>
+          <p>No encontramos coincidencias para "{{ searchControl.value }}"</p>
+        </div>
+
+        <div class="payroll-grid" *ngIf="allEmployees$ | async as employees; else gridLoading">
+          <div class="employee-card" *ngFor="let emp of employees">
+
+            <div class="legajo-badge">#{{ emp.legajoNumber }}</div>
+
+            <button mat-icon-button class="context-menu-btn" [matMenuTriggerFor]="cardMenu"
+              (click)="$event.stopPropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #cardMenu="matMenu" class="modern-menu" xPosition="before">
+              <button mat-menu-item matTooltip="Cargar PDF">
+                <mat-icon color="primary">file_upload</mat-icon>
+                <span>Subir Recibo</span>
+              </button>
+              <mat-divider *ngIf="currentUser.role === 'admin'"></mat-divider>
+              <button mat-menu-item *ngIf="currentUser.role === 'admin'" (click)="darDeBaja(emp)">
+                <mat-icon color="warn">person_remove</mat-icon>
+                <span class="text-warn">Dar de baja</span>
+              </button>
+            </mat-menu>
+
+            <div class="card-header">
+              <div class="avatar-wrapper">
+                <div class="avatar-glass">{{ emp.displayName.substring(0, 1) }}</div>
+                <div class="status-indicator" [class.active]="emp.isActive"></div>
+              </div>
+              <div class="header-text">
+                <h3>{{ emp.displayName }}</h3>
+                <span>{{ emp.position }}</span>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="info-row">
+                <mat-icon>mail_outline</mat-icon>
+                <span>{{ emp.email }}</span>
+              </div>
+              <div class="info-row">
+                <mat-icon>payments</mat-icon>
+                <span>{{ emp.sector }}</span>
+              </div>
+            </div>
+
+            <div class="card-footer single-action">
+              <button mat-button class="btn-manage" (click)="verDetalle(emp)">
+                VER LEGAJO
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Mi Perfil">
+      <div class="tab-content">
+        <ng-container *ngTemplateOutlet="profileTemplate; context: { $implicit: currentUser }"></ng-container>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <ng-template #employeeView>
+    <div class="tab-content employee-only-view">
+      <ng-container *ngTemplateOutlet="profileTemplate; context: { $implicit: currentUser }"></ng-container>
+    </div>
+  </ng-template>
+
+</div>
+
+<ng-template #profileTemplate let-user>
+  <div class="profile-layout">
+
+    <aside class="profile-sidebar">
+      <mat-card class="glass-card">
+        <mat-card-header>
+          <mat-card-title>Datos Personales</mat-card-title>
+          <mat-card-subtitle>Legajo #{{ user.legajoNumber }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="info-list">
+          <div class="info-row"><mat-icon>fingerprint</mat-icon> <span>{{ user.dni }}</span></div>
+          <div class="info-row"><mat-icon>badge</mat-icon> <span>{{ user.cuil }}</span></div>
+          <div class="info-row"><mat-icon>email</mat-icon> <span class="truncate">{{ user.email }}</span></div>
+          <div class="info-row"><mat-icon>calendar_today</mat-icon> <span>Ingreso: {{ user.joinDate | date:'dd/MM/yyyy'
+              }}</span></div>
+        </mat-card-content>
+      </mat-card>
+    </aside>
+
+    <main class="profile-main">
+      <mat-card class="glass-card">
+        <mat-card-header>
+          <mat-card-title>Mis Recibos</mat-card-title>
+          <mat-card-subtitle>Historial de pagos y estados de firma</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="user.paystubs || []" class="full-width-table">
+
+            <ng-container matColumnDef="period">
+              <th mat-header-cell *matHeaderCellDef> Período </th>
+              <td mat-cell *matCellDef="let s"> {{ s.period }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef> Monto </th>
+              <td mat-cell *matCellDef="let s"> {{ s.amount | currency:'ARS' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Estado </th>
+              <td mat-cell *matCellDef="let s">
+                <span class="status-badge" [ngClass]="s.status">
+                  {{ s.status === 'signed' ? 'Firmado' : 'Pendiente' }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Archivo </th>
+              <td mat-cell *matCellDef="let s">
+                <a [href]="s.fileUrl" target="_blank" mat-icon-button color="primary" matTooltip="Descargar Recibo">
+                  <mat-icon>download</mat-icon>
+                </a>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['period', 'amount', 'status', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['period', 'amount', 'status', 'actions'];"></tr>
+          </table>
+
+          <div *ngIf="!user.paystubs || user.paystubs.length === 0" class="empty-state">
+            <mat-icon style="font-size: 40px; width: 40px; height: 40px; color: #cbd5e1;">folder_open</mat-icon>
+            <p style="color: #64748b; margin-top: 10px;">No tienes recibos cargados aún.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </main>
+
+  </div>
+</ng-template>
+
+<ng-template #mainLoading>
+  <div class="loader-overlay"
+    style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+    <mat-spinner diameter="45"></mat-spinner>
+    <p style="margin-top: 16px; color: #64748b; font-weight: 500;">Iniciando Legajo360...</p>
+  </div>
+</ng-template>
+
+<ng-template #gridLoading>
+  <div class="payroll-grid">
+    <div class="employee-card skeleton" *ngFor="let i of [1,2,3,4,5,6]">
+      <div class="card-header">
+        <div class="avatar-skeleton"></div>
+        <div class="text-skeleton">
+          <div class="line title"></div>
+          <div class="line subtitle"></div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="line detail"></div>
+        <div class="line detail"></div>
+      </div>
+      <div class="card-footer-skeleton"></div>
+    </div>
+  </div>
+</ng-template>

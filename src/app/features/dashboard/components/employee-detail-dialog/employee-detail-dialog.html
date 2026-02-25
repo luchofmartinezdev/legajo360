@@ -1,0 +1,67 @@
+<div class="dialog-wrapper">
+    <div class="dialog-header">
+        <div class="avatar-large">{{ data.displayName.substring(0, 1) }}</div>
+        <div class="header-info">
+            <h2 mat-dialog-title>{{ data.displayName }}</h2>
+            <span class="position-badge">{{ data.position }}</span>
+        </div>
+        <button mat-icon-button mat-dialog-close class="close-btn">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-dialog-content class="mat-typography">
+        <div class="details-grid">
+            <div class="detail-item">
+                <label>Legajo</label>
+                <p>#{{ data.legajoNumber }}</p>
+            </div>
+            <div class="detail-item">
+                <label>DNI</label>
+                <p>{{ data.dni }}</p>
+            </div>
+            <div class="detail-item">
+                <label>CUIL</label>
+                <p>{{ data.cuil }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Email</label>
+                <p>{{ data.email }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Fecha Ingreso</label>
+                <p>{{ data.joinDate | date:'longDate' }}</p>
+            </div>
+            <div class="detail-item">
+                <label>Sector</label>
+                <p>{{ data.sector }}</p>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="paystubs-preview">
+            <h3>Últimos Recibos</h3>
+            <div *ngIf="data.paystubs?.length === 0" class="no-data">
+                Sin recibos cargados recientemente.
+            </div>
+            <mat-list *ngIf="data.paystubs && data.paystubs.length > 0">
+                <mat-list-item *ngFor="let stub of data.paystubs">
+                    <mat-icon matListItemIcon>description</mat-icon>
+                    <div matListItemTitle>{{ stub.period }}</div>
+                    <div matListItemLine>{{ stub.amount | currency:'ARS' }}</div>
+                    <button mat-icon-button matListItemMeta>
+                        <mat-icon>download</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>CERRAR</button>
+        <button mat-flat-button color="primary" (click)="subirRecibo()">
+            <mat-icon>upload</mat-icon> SUBIR RECIBO
+        </button>
+    </mat-dialog-actions>
+</div>

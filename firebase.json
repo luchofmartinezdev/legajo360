@@ -1,0 +1,34 @@
+{
+  "firestore": {
+    "database": "tumarkettcg",
+    "location": "southamerica-east1",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "dist/legajo360/browser",
+    "site": "legajo360",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Kernel Studio",
+        "supportEmail": "kernelstudio.solutions@gmail.com"
+      }
+    }
+  }
+}

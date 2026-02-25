@@ -1,0 +1,42 @@
+<mat-toolbar class="glass-navbar">
+  <div class="navbar-brand" routerLink="/dashboard">
+    <div class="logo-box">
+      <mat-icon>layers</mat-icon>
+    </div>
+    <span class="brand-text">Legajo360</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="user$ | async as user; else notLogged">
+    <div class="user-zone">
+      <span class="greeting">
+        Hola, <strong>{{ user.displayName || 'Usuario' }}</strong>
+      </span>
+      
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-btn">
+        <div class="avatar-mini">
+          {{ (user.displayName || user.email || '?').substring(0, 1) | uppercase }}
+        </div>
+      </button>
+
+      <mat-menu #userMenu="matMenu" class="modern-menu">
+        <button mat-menu-item routerLink="/dashboard">
+          <mat-icon>dashboard</mat-icon>
+          <span>Mi Panel</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()" class="logout-text">
+          <mat-icon color="warn">logout</mat-icon>
+          <span>Cerrar Sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </ng-container>
+
+  <ng-template #notLogged>
+    <button mat-flat-button color="primary" routerLink="/login">
+      Ingresar
+    </button>
+  </ng-template>
+</mat-toolbar>

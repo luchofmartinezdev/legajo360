@@ -1,0 +1,41 @@
+<div style="padding: 2rem; max-width: 600px; margin: auto;">
+  <h2>Alta de Empleado - RRHH</h2>
+  
+  <form [formGroup]="employeeForm"  class="form-container" 
+        style="display: flex; flex-direction: column; gap: 1rem;">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>UID de Firebase</mat-label>
+      <input matInput formControlName="uid" placeholder="Pegar el UID de Auth">
+      <mat-hint>Este ID lo generás cuando el empleado se registra por primera vez</mat-hint>
+    </mat-form-field>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre Completo</mat-label>
+        <input matInput formControlName="displayName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email Corporativo</mat-label>
+        <input matInput formControlName="email">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Obra Social</mat-label>
+      <input matInput formControlName="healthInsurance">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de Ingreso</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="startDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid">
+      Crear Legajo en Firestore
+    </button>
+  </form>
+</div>

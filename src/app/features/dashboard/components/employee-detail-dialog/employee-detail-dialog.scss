@@ -1,0 +1,52 @@
+.dialog-wrapper {
+  padding: 12px;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  position: relative;
+
+  .avatar-large {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+  }
+
+  .header-info {
+    h2 { margin: 0; font-size: 24px; font-weight: 800; }
+    .position-badge {
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+  }
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+
+  .detail-item {
+    label { font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; }
+    p { margin: 4px 0 0 0; font-weight: 600; color: #1e293b; }
+  }
+}
+
+.paystubs-preview {
+  margin-top: 24px;
+  h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+}

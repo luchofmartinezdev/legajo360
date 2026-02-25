@@ -1,1 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif; // O la que prefieras
+  background-color: #f8fafc; // Un gris muy suave para que el cristal resalte
+  color: #1e293b;
+}
+
+// Para que el contenido principal respire
+main.content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.custom-dialog-container .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+} 

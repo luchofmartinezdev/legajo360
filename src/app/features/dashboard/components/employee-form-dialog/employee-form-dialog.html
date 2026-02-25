@@ -1,0 +1,95 @@
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2 mat-dialog-title>Alta de Nuevo Ingreso</h2>
+        <button mat-stroked-button color="accent" (click)="autocompletarDatos()"
+            matTooltip="Llenar con datos de prueba">
+            <mat-icon>auto_fix_high</mat-icon> Autocompletar
+        </button>
+    </div>
+
+    <mat-dialog-content>
+        <form [formGroup]="employeeForm" class="modern-form">
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Número de Legajo</mat-label>
+                    <input matInput formControlName="legajoNumber" placeholder="Ej: 1050">
+                    <mat-icon matPrefix>badge</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre Completo</mat-label>
+                    <input matInput formControlName="displayName" placeholder="Ej: Juan Pérez">
+                    <mat-icon matPrefix>person</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Correo Electrónico</mat-label>
+                    <input matInput formControlName="email" type="email" placeholder="email@kernelstudio.com">
+                    <mat-icon matPrefix>email</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>DNI</mat-label>
+                    <input matInput formControlName="dni">
+                    <mat-icon matPrefix>fingerprint</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>CUIL</mat-label>
+                    <input matInput formControlName="cuil" placeholder="20-XXXXXXXX-X">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Puesto</mat-label>
+                    <input matInput formControlName="position" placeholder="Ej: Backend Dev">
+                    <mat-icon matPrefix>work</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Sector</mat-label>
+                    <mat-select formControlName="sector" panelClass="modern-select-panel">
+                        <mat-option value="Development">Development</mat-option>
+                        <mat-option value="Design">Design</mat-option>
+                        <mat-option value="QA">QA</mat-option>
+                        <mat-option value="RRHH">Recursos Humanos</mat-option>
+                        <mat-option value="Management">Management</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Fecha de Ingreso</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="joinDate" (click)="picker.open()"
+                        readonly>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Rol en Sistema</mat-label>
+                    <mat-select formControlName="role" panelClass="modern-select-panel">
+                        <mat-option value="employee">Empleado (Solo lectura)</mat-option>
+                        <mat-option value="rrhh">RRHH (Gestiona nómina)</mat-option>
+                        <mat-option value="admin">Administrador Total</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>admin_panel_settings</mat-icon>
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="dialog-footer">
+        <button mat-button mat-dialog-close>CANCELAR</button>
+        <button mat-flat-button color="primary" [disabled]="employeeForm.invalid" (click)="guardar()">
+            <mat-icon>save</mat-icon> CREAR LEGAJO
+        </button>
+    </mat-dialog-actions>
+</div>
