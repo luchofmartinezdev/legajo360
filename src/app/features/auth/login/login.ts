@@ -15,7 +15,7 @@ import { MatIconModule } from "@angular/material/icon";
 export class LoginComponent {
   private authService = inject(AuthService);
 
-  async login() {
+  async loginWithGoogle() {
     try {
       await this.authService.loginWithGoogle();
       // El servicio ya se encarga de redirigir si el mail es @kernelstudio.com

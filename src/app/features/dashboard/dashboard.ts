@@ -1,19 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-// Angular Material
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 // Servicios y Modelos
 import { EmployeeService } from '../../core/services/employee';
@@ -27,6 +15,7 @@ import { EmployeeDetailDialogComponent } from './components/employee-detail-dial
 import { Observable, of, combineLatest } from 'rxjs';
 import { filter, switchMap, map, tap, catchError, startWith, debounceTime, distinctUntilChanged, delay, shareReplay } from 'rxjs/operators';
 import { EmployeeFormDialogComponent } from './components/employee-form-dialog/employee-form-dialog';
+import { EmployeeProfileComponent } from "../employee-profile/employee-profile";
 
 @Component({
   selector: 'app-dashboard',
@@ -34,18 +23,10 @@ import { EmployeeFormDialogComponent } from './components/employee-form-dialog/e
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatChipsModule,
-    MatDividerModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatMenuModule,
-    MatDialogModule
-  ],
+    FormsModule,
+    EmployeeProfileComponent,
+    EmployeeFormDialogComponent
+],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })
@@ -53,13 +34,21 @@ export class DashboardComponent implements OnInit {
   // Inyecciones
   private employeeService = inject(EmployeeService);
   private authService = inject(AuthService);
-  private dialog = inject(MatDialog);
 
   // Observables y Controles
   employeeData$!: Observable<Employee | null>;
   allEmployees$!: Observable<Employee[]>;
   searchControl = new FormControl('');
   currentUid: string | null = null;
+
+  activeTab: 'nomina' | 'perfil' = 'nomina';
+  selectedEmployee: Employee | null = null;
+  isModalOpen = false;
+  isFormModalOpen = false;
+
+  setTab(tab: 'nomina' | 'perfil') {
+    this.activeTab = tab;
+  }
 
   ngOnInit() {
     console.log("🚀 Iniciando Dashboard de Legajo360");
@@ -118,24 +107,25 @@ export class DashboardComponent implements OnInit {
         if (term.length < 3) return employees;
 
         // Si tiene 3 o más, filtramos por nombre o legajo
-        return employees.filter(emp => 
-          emp.displayName.toLowerCase().includes(term) || 
+        return employees.filter(emp =>
+          emp.displayName.toLowerCase().includes(term) ||
           emp.legajoNumber.includes(term)
         );
       })
     );
   }
 
-  /**
-   * Abre el modal con el detalle del empleado
-   */
   verDetalle(employee: Employee) {
-    this.dialog.open(EmployeeDetailDialogComponent, {
-      width: '600px',
-      data: employee,
-      panelClass: 'custom-dialog-container',
-      autoFocus: false
-    });
+    this.selectedEmployee = employee;
+    this.isModalOpen = true;
+    // Bloqueamos el scroll del body cuando el modal está abierto
+    document.body.style.overflow = 'hidden';
+  }
+
+  cerrarModal() {
+    this.isModalOpen = false;
+    this.selectedEmployee = null;
+    document.body.style.overflow = 'auto';
   }
 
   /**
@@ -143,14 +133,14 @@ export class DashboardComponent implements OnInit {
    */
   async darDeBaja(employee: Employee) {
     const confirmar = confirm(`¿Estás seguro que querés dar de baja a ${employee.displayName}? \n(Perderá el acceso al sistema pero su historial se mantendrá)`);
-    
+
     if (confirmar) {
       try {
         const empleadoInactivo: Employee = {
           ...employee,
           isActive: false
         };
-        
+
         await this.employeeService.upsertEmployee(empleadoInactivo);
         console.log(`✅ Baja exitosa: ${employee.displayName}`);
         // No hace falta recargar, Firebase actualizará la grilla automáticamente
@@ -189,35 +179,36 @@ export class DashboardComponent implements OnInit {
   }
 
   abrirNuevoIngreso() {
-  const dialogRef = this.dialog.open(EmployeeFormDialogComponent, {
-    width: '700px',
-    panelClass: 'custom-dialog-container',
-    disableClose: true // Evita que se cierre haciendo click afuera accidentalmente
-  });
+    this.isFormModalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
 
-  dialogRef.afterClosed().subscribe(async (formData) => {
-    if (formData) {
-      try {
-        // En una app real, el UID lo genera Firebase Auth cuando creás el usuario.
-        // Como estamos guardando directo en la base legajo360 para el MVP, inventamos uno:
-        const nuevoEmpleado: Employee = {
-          ...formData,
-          uid: `user-${new Date().getTime()}`, 
-          isActive: true,
-          paystubs: [] // Arranca sin recibos
-        };
-        
-        // Convertimos la fecha del datepicker a ISO string
-        nuevoEmpleado.joinDate = formData.joinDate.toISOString();
+  cerrarFormModal() {
+    this.isFormModalOpen = false;
+    document.body.style.overflow = 'auto';
+  }
 
-        await this.employeeService.upsertEmployee(nuevoEmpleado);
-        console.log("✅ Nuevo ingreso registrado en Kernel Studio");
-        
-      } catch (error) {
-        console.error("❌ Error al guardar empleado", error);
-        alert("Hubo un error al guardar los datos.");
-      }
+  // Este método lo llamará el componente de formulario (o el HTML) al emitir los datos
+  async guardarNuevoEmpleado(formData: any) {
+    if (!formData) return;
+
+    try {
+      const nuevoEmpleado: Employee = {
+        ...formData,
+        uid: `user-${new Date().getTime()}`,
+        isActive: true,
+        paystubs: [],
+        // Manejo de fecha compatible con el input nativo type="date"
+        joinDate: new Date(formData.joinDate + 'T00:00:00').toISOString()
+      };
+
+      await this.employeeService.upsertEmployee(nuevoEmpleado);
+      console.log("✅ Nuevo ingreso registrado en Kernel Studio");
+      this.cerrarFormModal();
+
+    } catch (error) {
+      console.error("❌ Error al guardar empleado", error);
+      alert("Hubo un error al guardar los datos.");
     }
-  });
-}
+  }
 }

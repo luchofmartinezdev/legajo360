@@ -4,8 +4,10 @@ import { DashboardComponent } from './features/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
 import { EmployeeManagementComponent } from './features/admin/employee-management/employee-management';
 import { adminGuard } from './core/guards/admin-guard';
+import { HomeComponent } from './features/home/home';
 
 export const routes: Routes = [
+    { path: '', component: HomeComponent },
     { path: 'login', component: LoginComponent },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
     {

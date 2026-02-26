@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router'; 
-import { Footer } from "./core/components/footer/footer";
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router'; 
+import { FooterComponent } from "./core/components/footer/footer";
 import { filter } from 'rxjs';
 import { NavbarComponent } from './core/components/navbar/navbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, Footer],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

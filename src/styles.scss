@@ -1,3 +1,15 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tu test para verificar que el SCSS compila */
+.test-blue {
+  background-color: #1e3a8a !important;
+  color: white !important;
+}
+
+/* Tus otros estilos de Material debajo... */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif; // O la que prefieras

@@ -4,10 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })
-export class Footer {
+export class FooterComponent {
 
 }

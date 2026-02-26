@@ -1,41 +1,37 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 
-// Material
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+// Material 
 import { AuthService } from '../../services/auth';
-import { MatDividerModule } from "@angular/material/divider";
+import { Observable } from 'rxjs';
 
 // Servicios
 
 @Component({
   selector: 'app-navbar',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatDividerModule
-],
+  standalone: true, imports: [AsyncPipe, RouterLink, CommonModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
+
 export class NavbarComponent {
-  private authService = inject(AuthService);
   private router = inject(Router);
 
   // Observable que nos dirá si el usuario está logueado
-  user$ = this.authService.user$;
+  user$: Observable<any>;
+  isMenuOpen = false;
 
-  async logout() {
-    await this.authService.logout();
-    this.router.navigate(['/login']);
+  constructor(private authService: AuthService) {
+    this.user$ = this.authService.user$;
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  logout() {
+    this.isMenuOpen = false;
+    this.authService.logout();
   }
 }
