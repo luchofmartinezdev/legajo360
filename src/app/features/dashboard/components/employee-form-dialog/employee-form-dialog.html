@@ -1,95 +1,128 @@
-<div class="dialog-container">
-    <div class="dialog-header">
-        <h2 mat-dialog-title>Alta de Nuevo Ingreso</h2>
-        <button mat-stroked-button color="accent" (click)="autocompletarDatos()"
-            matTooltip="Llenar con datos de prueba">
-            <mat-icon>auto_fix_high</mat-icon> Autocompletar
-        </button>
+<div
+  class="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+
+  <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-white/50 backdrop-blur-sm">
+    <div>
+      <h2 class="text-2xl font-black text-slate-900 tracking-tighter italic">Alta de Nuevo Ingreso</h2>
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Configuración de legajo digital</p>
     </div>
 
-    <mat-dialog-content>
-        <form [formGroup]="employeeForm" class="modern-form">
+    <button (click)="autocompletarDatos()"
+      class="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl font-bold text-xs hover:bg-indigo-600 hover:text-white transition-all group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:rotate-12" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      Autocompletar
+    </button>
+  </div>
 
-            <div class="form-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Número de Legajo</mat-label>
-                    <input matInput formControlName="legajoNumber" placeholder="Ej: 1050">
-                    <mat-icon matPrefix>badge</mat-icon>
-                </mat-form-field>
+  <form [formGroup]="employeeForm" class="p-8 space-y-6">
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Nombre Completo</mat-label>
-                    <input matInput formControlName="displayName" placeholder="Ej: Juan Pérez">
-                    <mat-icon matPrefix>person</mat-icon>
-                </mat-form-field>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Número de Legajo</label>
+        <div class="relative">
+          <input formControlName="legajoNumber" type="text" placeholder="Ej: 1050"
+            class="w-full pl-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+        </div>
+      </div>
 
-            <div class="form-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Correo Electrónico</mat-label>
-                    <input matInput formControlName="email" type="email" placeholder="email@kernelstudio.com">
-                    <mat-icon matPrefix>email</mat-icon>
-                </mat-form-field>
-            </div>
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Nombre Completo</label>
+        <input formControlName="displayName" type="text" placeholder="Ej: Juan Pérez"
+          class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+      </div>
+    </div>
 
-            <div class="form-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>DNI</mat-label>
-                    <input matInput formControlName="dni">
-                    <mat-icon matPrefix>fingerprint</mat-icon>
-                </mat-form-field>
+    <div class="space-y-1">
+      <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Correo Electrónico
+        Corporativo</label>
+      <input formControlName="email" type="email" placeholder="usuario@kernel.studio"
+        class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+    </div>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>CUIL</mat-label>
-                    <input matInput formControlName="cuil" placeholder="20-XXXXXXXX-X">
-                </mat-form-field>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">DNI</label>
+        <input formControlName="dni" type="text" placeholder="Sin puntos"
+          class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+      </div>
 
-            <div class="form-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Puesto</mat-label>
-                    <input matInput formControlName="position" placeholder="Ej: Backend Dev">
-                    <mat-icon matPrefix>work</mat-icon>
-                </mat-form-field>
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">CUIL</label>
+        <input formControlName="cuil" type="text" placeholder="20-XXXXXXXX-X"
+          class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+      </div>
+    </div>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Sector</mat-label>
-                    <mat-select formControlName="sector" panelClass="modern-select-panel">
-                        <mat-option value="Development">Development</mat-option>
-                        <mat-option value="Design">Design</mat-option>
-                        <mat-option value="QA">QA</mat-option>
-                        <mat-option value="RRHH">Recursos Humanos</mat-option>
-                        <mat-option value="Management">Management</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Puesto / Cargo</label>
+        <input formControlName="position" type="text" placeholder="Ej: Backend Developer"
+          class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+      </div>
 
-            <div class="form-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Fecha de Ingreso</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="joinDate" (click)="picker.open()"
-                        readonly>
-                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Sector</label>
+        <div class="relative">
+          <select formControlName="sector"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700 appearance-none">
+            <option value="Development">Development</option>
+            <option value="Design">Design</option>
+            <option value="QA">QA</option>
+            <option value="RRHH">Recursos Humanos</option>
+            <option value="Management">Management</option>
+          </select>
+          <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Rol en Sistema</mat-label>
-                    <mat-select formControlName="role" panelClass="modern-select-panel">
-                        <mat-option value="employee">Empleado (Solo lectura)</mat-option>
-                        <mat-option value="rrhh">RRHH (Gestiona nómina)</mat-option>
-                        <mat-option value="admin">Administrador Total</mat-option>
-                    </mat-select>
-                    <mat-icon matPrefix>admin_panel_settings</mat-icon>
-                </mat-form-field>
-            </div>
-        </form>
-    </mat-dialog-content>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Fecha de Ingreso</label>
+        <input formControlName="joinDate" type="date"
+          class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700">
+      </div>
 
-    <mat-dialog-actions align="end" class="dialog-footer">
-        <button mat-button mat-dialog-close>CANCELAR</button>
-        <button mat-flat-button color="primary" [disabled]="employeeForm.invalid" (click)="guardar()">
-            <mat-icon>save</mat-icon> CREAR LEGAJO
-        </button>
-    </mat-dialog-actions>
+      <div class="space-y-1">
+        <label class="text-[10px] font-black text-slate-400 uppercase ml-1 tracking-widest">Rol en Sistema</label>
+        <div class="relative">
+          <select formControlName="role"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-600 focus:bg-white transition-all font-medium text-slate-700 appearance-none">
+            <option value="employee">Empleado (Solo lectura)</option>
+            <option value="rrhh">RRHH (Gestiona nómina)</option>
+            <option value="admin">Administrador Total</option>
+          </select>
+          <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-4 pt-6">
+      <button type="button" (click)="cerrarFormModal()"
+        class="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-all text-sm uppercase tracking-widest">
+        Cancelar
+      </button>
+      <button type="button" [disabled]="employeeForm.invalid" (click)="guardar()"
+        class="flex-[2] px-6 py-4 rounded-2xl font-bold bg-slate-900 text-white hover:bg-indigo-600 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm shadow-xl shadow-slate-200 uppercase tracking-widest flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Crear Legajo
+      </button>
+    </div>
+
+  </form>
 </div>

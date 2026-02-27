@@ -18,7 +18,7 @@ export type PaystubStatus =
  */
 export interface Employee {
   uid: string;
-  legajoNumber: string;
+  legajoNumber: number;
   displayName: string;
   email: string;
   dni: string;

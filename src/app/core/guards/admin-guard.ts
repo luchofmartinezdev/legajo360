@@ -17,7 +17,8 @@ export const adminGuard: CanActivateFn = (route, state) => {
       return employeeService.getEmployeeByUid(user.uid);
     }),
     map(employee => {
-      if (employee && employee.role === 'admin') {
+      
+      if (employee && employee.role === 'admin' ) {
         return true; // Es admin de Kernel Studio, puede pasar
       }
 

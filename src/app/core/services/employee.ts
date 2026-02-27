@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Employee } from '../../shared/models/legajo';
 
@@ -10,9 +10,9 @@ import {
   docData,
   setDoc,
   collection,
-  query,
-  where,
-  collectionData
+  collectionData,
+  getDoc,
+  getDocs,
 } from '@angular/fire/firestore';
 
 @Injectable({
@@ -21,33 +21,31 @@ import {
 export class EmployeeService {
   private firestore = inject(Firestore);
 
-  // core/services/employee.service.ts
   getEmployeeByUid(uid: string | null | undefined): Observable<Employee | null> {
-    // 1. Verificación de seguridad para evitar el error de "even number of segments"
     if (!uid || uid.trim() === '') {
-      console.warn("UID inválido o vacío. No se realizará la consulta a Firestore.");
+      console.warn("⚠️ UID inválido recibido en el servicio.");
       return of(null);
     }
 
     try {
-      // 2. Ahora es seguro crear la referencia porque sabemos que hay 2 segmentos
       const docRef = doc(this.firestore, 'employees', uid.trim());
 
-      return docData(docRef, { idField: 'uid' }).pipe(
-        map(data => {
-          if (!data) {
-            console.log(`Documento no encontrado para el UID: ${uid}`);
-            return null;
+      return from(getDoc(docRef)).pipe(
+        map(docSnap => {
+          if (docSnap.exists()) {
+            // Aquí extraemos los datos y le inyectamos el UID manualmente
+            return { ...docSnap.data(), uid: docSnap.id } as Employee;
           }
-          return data as Employee;
+          console.log(`Documento no encontrado: ${uid}`);
+          return null;
         }),
         catchError(err => {
-          console.error("Error en el stream de la base 'legajo360':", err);
+          console.error("Error al traer el empleado:", err);
           return of(null);
         })
       );
     } catch (error) {
-      console.error("Error al construir la referencia del documento:", error);
+      console.error("❌ Error al construir referencia de documento:", error);
       return of(null);
     }
   }
@@ -67,13 +65,41 @@ export class EmployeeService {
    */
   getActiveEmployees(): Observable<Employee[]> {
     const employeesRef = collection(this.firestore, 'employees');
-    const q = query(employeesRef, where('isActive', '==', true));
 
-    return collectionData(q, { idField: 'uid' }).pipe(
-      map(data => data as Employee[]),
+    // Convertimos la promesa de getDocs en un Observable
+    return from(getDocs(employeesRef)).pipe(
+      map(querySnapshot => {
+        // Mapeamos los documentos a objetos Employee inyectando el ID
+        const employees = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          uid: doc.id
+        })) as Employee[];
+
+        // Filtramos por los activos (isActive)
+        return employees.filter(emp => emp.isActive === true);
+      }),
       catchError(err => {
-        console.error("Error al listar empleados:", err);
+        console.error("❌ Error al traer la nómina de Kernel:", err);
         return of([]);
+      })
+    );
+  }
+
+  // Obtiene el uid del empleado mas reciente
+  getLastEmployeeId(): Observable<string> {
+    const employeesRef = collection(this.firestore, 'employees');
+    
+    return from(getDocs(employeesRef)).pipe(
+      map(querySnapshot => { 
+        const employees = querySnapshot.docs.map(doc => ({
+          ...doc.data(),
+          uid: doc.id
+        })) as Employee[];
+        return employees[employees.length - 1].uid;
+      }),
+      catchError(err => {
+        console.error("❌ Error al traer la nómina de Kernel:", err);
+        return of('');
       })
     );
   }

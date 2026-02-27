@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, GoogleAuthProvider, signInWithPopup, signOut, user } from '@angular/fire/auth';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Router } from '@angular/router'; 
+import { catchError, map, Observable, of } from 'rxjs';
+import { Employee } from '../../shared/models/legajo';
+import { doc, docData } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -31,11 +33,12 @@ export class AuthService {
   }
 
   logout() {
-    return signOut(this.auth).then(() => this.router.navigate(['/login']));
+    return signOut(this.auth).then(() => this.router.navigate(['/']));
   }
 
   getCurrentUserId(): string | null {
     const currentUser = this.auth.currentUser;
     return currentUser ? currentUser.uid : null;
-  }
+  } 
+
 }

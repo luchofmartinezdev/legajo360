@@ -1,39 +1,28 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-// Angular Material
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+// Angular Material 
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { EmployeeService } from '../../../../core/services/employee';
 
 @Component({
   selector: 'app-employee-form-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDatepickerModule,
-    MatNativeDateModule 
+    ReactiveFormsModule
   ],
-  providers: [ provideNativeDateAdapter() ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './employee-form-dialog.html',
   styleUrl: './employee-form-dialog.scss'
 })
 export class EmployeeFormDialogComponent {
   private fb = inject(FormBuilder);
-  private dialogRef = inject(MatDialogRef<EmployeeFormDialogComponent>);
+  private employeeService = inject(EmployeeService);
+
+  @Output() onCancel = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<any>();
 
   employeeForm: FormGroup = this.fb.group({
     legajoNumber: ['', [Validators.required, Validators.minLength(3)]],
@@ -44,8 +33,15 @@ export class EmployeeFormDialogComponent {
     position: ['', Validators.required],
     sector: ['', Validators.required],
     role: ['employee', Validators.required],
+    // FORMATO DE FECHA DD/MM/YYYY
     joinDate: [new Date(), Validators.required]
   });
+
+  ngOnInit() {
+    this.employeeForm.patchValue({
+      legajoNumber: this.employeeService.getLastEmployeeId()
+    });
+  }
 
   // BOTÓN MÁGICO PARA DESARROLLO
   autocompletarDatos() {
@@ -59,15 +55,22 @@ export class EmployeeFormDialogComponent {
       position: 'UX/UI Designer',
       sector: 'Design',
       role: 'employee',
-      joinDate: new Date()
+      // formato de fecha: MM/DD/YYYY
+      joinDate: new Date().toISOString().split('T')[0]
     });
+  }
+
+  cerrarFormModal() {
+    // Simplemente avisamos al padre que queremos cerrar
+    this.onCancel.emit();
   }
 
   guardar() {
     if (this.employeeForm.valid) {
-      // Devolvemos el valor del form al dashboard para que lo guarde en Firebase
-      this.dialogRef.close(this.employeeForm.value);
+      // Emitimos el valor del formulario al Dashboard
+      this.onSave.emit(this.employeeForm.value);
     } else {
+      // Marcamos errores visuales si falta algo
       this.employeeForm.markAllAsTouched();
     }
   }

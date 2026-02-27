@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-employee-profile',
-  imports: [],
-  templateUrl: './employee-profile.html',
-  styleUrl: './employee-profile.scss',
+  standalone: true,
+  imports: [CurrencyPipe, DatePipe],
+  templateUrl: './employee-profile.html'
 })
-export class EmployeeProfile {
-
+export class EmployeeProfileComponent {
+  @Input({ required: true }) user: any; // Aquí podés usar tu interfaz Employee
 }
