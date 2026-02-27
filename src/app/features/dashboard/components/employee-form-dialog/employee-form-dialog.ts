@@ -1,9 +1,10 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 // Angular Material 
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { EmployeeService } from '../../../../core/services/employee';
 
 @Component({
   selector: 'app-employee-form-dialog',
@@ -18,6 +19,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 })
 export class EmployeeFormDialogComponent {
   private fb = inject(FormBuilder);
+  private employeeService = inject(EmployeeService);
 
   @Output() onCancel = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<any>();
@@ -34,6 +36,12 @@ export class EmployeeFormDialogComponent {
     // FORMATO DE FECHA DD/MM/YYYY
     joinDate: [new Date(), Validators.required]
   });
+
+  ngOnInit() {
+    this.employeeForm.patchValue({
+      legajoNumber: this.employeeService.getLastEmployeeId()
+    });
+  }
 
   // BOTÓN MÁGICO PARA DESARROLLO
   autocompletarDatos() {
